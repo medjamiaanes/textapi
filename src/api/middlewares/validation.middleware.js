@@ -1,12 +1,15 @@
 import Joi from '@hapi/joi'
+import JoiObjectId from 'joi-objectid'
 import loggerService from '../../services/logger.service'
 
+Joi.objectId = JoiObjectId(Joi)
 const textValidation = Joi.string()
   .trim()
   .replace(/\s\s+/g, ' ')
   .lowercase()
 
 const stringValidation = Joi.string().required().trim()
+const objectIdValidation = Joi.objectId().required()
 const languageValidation = Joi.string()
   .required()
   .valid('en', 'fr', 'ar')
@@ -40,7 +43,7 @@ export const createValidation = async (req, res, next) => {
 
 export const updateValidation = async (req, res, next) => {
   try {
-    await Joi.object({ textId: stringValidation }).validateAsync(
+    await Joi.object({ textId: objectIdValidation }).validateAsync(
       req.params,
       validationOptions,
     )
@@ -57,7 +60,7 @@ export const updateValidation = async (req, res, next) => {
 
 export const textCountValidation = async (req, res, next) => {
   try {
-    await Joi.object({ textId: stringValidation }).validateAsync(
+    await Joi.object({ textId: objectIdValidation }).validateAsync(
       req.params,
       validationOptions,
     )
@@ -74,7 +77,7 @@ export const textCountByLanguageValidation = async (
 ) => {
   try {
     await Joi.object({
-      textId: stringValidation,
+      textId: objectIdValidation,
       language: languageValidation,
     }).validateAsync(req.params, validationOptions)
     return next()
