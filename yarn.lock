@@ -863,7 +863,7 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/runtime@^7.4.5", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.4.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.8.4":
   version "7.14.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.6.tgz#535203bc0892efc7dec60bdc27b2ecf6e409062d"
   integrity sha512-/PCB2uJ7oM44tz8YhC4Z/6PeOKXp4K588f+5M3clr1M4zbqztlo0XEfJ2LEzj/FgwfgGcIdl8n7YYjTCI0BYwg==
@@ -1374,6 +1374,13 @@ astral-regex@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
+
+async-await-foreach@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/async-await-foreach/-/async-await-foreach-1.0.4.tgz#605530756acf94d83488fd55a569ca26aed49cd5"
+  integrity sha512-jKqRqU6QOqkOnEWCwkGtEfTTu3RNZDsmM0lmyjYlXbsP3Bik2mC8mIAy+u8F/23q5Bb4J/Pi9xqDYEQmz3xyRg==
+  dependencies:
+    "@babel/runtime" "^7.4.2"
 
 async-each@^1.0.1:
   version "1.0.3"
