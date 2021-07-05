@@ -1,0 +1,36 @@
+{
+  "name": "textapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "repository": "https://github.com/medjamiaanes/textapi.git",
+  "author": "anesmeister",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./build/main.js",
+    "dev": "backpack dev",
+    "build": "backpack build"
+  },
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/plugin-proposal-do-expressions": "^7.14.5",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
+    "@babel/plugin-proposal-optional-chaining": "^7.14.5",
+    "babel-eslint": "^10.1.0",
+    "backpack-core": "^0.8.4",
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.2"
+  }
+}
