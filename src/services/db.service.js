@@ -17,24 +17,24 @@ class DatabaseService {
     this.dbName = config.dbName
   }
 
-  connectDB = () => {
-    console.log(`Connecting to database ....`)
-    const connection = mongoose.createConnection(
-      `mongodb+srv://${this.dbUser}:${this.dbPassword}@${this.dbCluster}.iqubh.mongodb.net/${this.dbName}?retryWrites=true&w=majority`,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      },
-    )
+  connectDB = async () => {
+    try {
+      console.log(`Connecting to database ....`)
+      const mongo = await mongoose.connect(
+        `mongodb+srv://${this.dbUser}:${this.dbPassword}@${this.dbCluster}.iqubh.mongodb.net/${this.dbName}?retryWrites=true&w=majority`,
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+          useCreateIndex: true,
+        },
+      )
+      console.log('Connection to DB established successfully')
 
-    connection.once('open', () =>
-      console.log('Connection to DB established successfully'),
-    )
-    connection.on('error', (err) =>
-      console.log('DB connection error', { err }),
-    )
-
-    return connection
+      return mongo.connection
+    } catch (error) {
+      console.log('DB connection error', { error })
+      return error
+    }
   }
 }
 
