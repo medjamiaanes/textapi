@@ -44,8 +44,9 @@ export const update = async (req, res) => {
     const updatedText = await textModel.findOneAndUpdate(
       { _id: textId },
       { translation: { ...req.body } },
-      { upsert: false, new: true },
+      { upsert: false, new: true, returnDocument: true },
     )
+    if (!updatedText) return res.status(404).send('Not found')
     return res.status(200).json(updatedText)
   } catch (error) {
     return errorResponse(res, error)
