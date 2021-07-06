@@ -29,9 +29,7 @@ export const fetch = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
-    const createdText = await textModel.create({
-      translation: { ...req.body },
-    })
+    const createdText = await textModel.create({ ...req.body })
     return res.status(201).json(createdText)
   } catch (error) {
     return errorResponse(res, error)
@@ -43,13 +41,14 @@ export const update = async (req, res) => {
   try {
     const updatedText = await textModel.findOneAndUpdate(
       { _id: textId },
-      { translation: { ...req.body } },
-      { upsert: false, new: true, returnDocument: true },
+      { ...req.body },
+      {
+        upsert: false,
+        new: true,
+      },
     )
     if (!updatedText) return res.status(404).send('Not found')
-    return res
-      .status(200)
-      .json({ message: 'Text updated successfully' })
+    return res.status(200).json(updatedText)
   } catch (error) {
     return errorResponse(res, error)
   }
@@ -58,12 +57,10 @@ export const update = async (req, res) => {
 export const textCount = async (req, res) => {
   const { textId } = req.params
   try {
-    const text = await textModel.findById(textId)
+    const text = await textModel.findById(textId).select('-_id')
     if (!text) return res.status(404).send('Not found')
-
-    const wordsCount = (
-      await getWordsByText(text.translation.toJSON(), true)
-    ).length
+    const wordsCount = (await getWordsByText(text.toJSON(), true))
+      .length
     return res.status(200).json({ wordsCount })
   } catch (error) {
     return errorResponse(res, error)
@@ -73,14 +70,11 @@ export const textCount = async (req, res) => {
 export const textCountByLanguage = async (req, res) => {
   const { textId, language } = req.params
   try {
-    const text = await textModel.findById(textId)
+    const text = await textModel.findById(textId).select('-_id')
     if (!text) return res.status(404).send('Not found')
 
     const wordsCount = (
-      await getWordsBySentence(
-        text.translation.toJSON()[language],
-        true,
-      )
+      await getWordsBySentence(text[language], true)
     ).length
     return res.status(200).json({ wordsCount })
   } catch (error) {
@@ -93,9 +87,9 @@ export const fuzzySearch = async (req, res) => {
   try {
     const texts = await textModel.find({
       $or: [
-        { 'translation.ar': { $regex: `.*${query}.*` } },
-        { 'translation.fr': { $regex: `.*${query}.*` } },
-        { 'translation.en': { $regex: `.*${query}.*` } },
+        { ar: { $regex: `.*${query}.*` } },
+        { fr: { $regex: `.*${query}.*` } },
+        { en: { $regex: `.*${query}.*` } },
       ],
     })
     return res.status(200).json(texts)
@@ -106,9 +100,9 @@ export const fuzzySearch = async (req, res) => {
 
 export const mostOccurent = async (req, res) => {
   try {
-    const texts = await textModel.find()
+    const texts = await textModel.find().select('-_id')
     const words = await mostOccurentWords(
-      texts.map(({ translation }) => translation.toJSON()),
+      texts.map((text) => text.toJSON()),
     )
     const [mostOccurentWord, ...otherMostOccurentWords] = words
     return res
