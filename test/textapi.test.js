@@ -7,7 +7,7 @@ chai.use(chaiHttp)
 
 describe('textapi', () => {
   describe('Fetch texts', () => {
-    it('Should get all texts with pagination', (done) => {
+    it('It should return all text with pagination', (done) => {
       chai
         .request(server)
         .get('/text')
@@ -37,8 +37,7 @@ describe('textapi', () => {
         .end((err, res) => {
           expect(res).satisfy(
             ({ status, body }) =>
-              (status === 201 && body._id && body.translation) ||
-              status === 422,
+              status === 201 && body._id && body.translation,
           )
           done()
         })
@@ -46,7 +45,7 @@ describe('textapi', () => {
   })
 
   describe('Update text', () => {
-    it('It should update a text and returns it or 404 not found', (done) => {
+    it('It should update a text or return a 404 not found', (done) => {
       const text = {
         ar: 'هذا نص عربي',
         en: 'Text in english',
@@ -58,8 +57,7 @@ describe('textapi', () => {
         .send(text)
         .end((err, res) => {
           expect(res).satisfy(
-            ({ status }) =>
-              status === 200 || status === 404 || status === 422,
+            ({ status }) => status === 200 || status === 404,
           )
           done()
         })
@@ -67,7 +65,7 @@ describe('textapi', () => {
   })
 
   describe('Get word count by text', () => {
-    it('It should returns wordsCount or 404 not found', (done) => {
+    it('It should return wordsCount or 404 not found', (done) => {
       chai
         .request(server)
         .get('/text/60e39388c78d014174151ea2/count')
@@ -78,8 +76,7 @@ describe('textapi', () => {
           expect(res).satisfy(
             ({ status, body }) =>
               (status === 200 && 'wordsCount' in body) ||
-              status === 404 ||
-              status === 422,
+              status === 404,
           )
           done()
         })
@@ -87,7 +84,7 @@ describe('textapi', () => {
   })
 
   describe('Get word count by text & language', () => {
-    it('It should returns wordsCount or 404 not found', (done) => {
+    it('It should return wordsCount or 404 not found', (done) => {
       chai
         .request(server)
         .get('/text/60e39388c78d014174151ea2/count/en')
@@ -106,8 +103,8 @@ describe('textapi', () => {
     })
   })
 
-  describe('Text fuzzy search', () => {
-    it('It should returns an array of texts', (done) => {
+  describe('Fuzzy search', () => {
+    it('It should return an array of texts', (done) => {
       chai
         .request(server)
         .get('/text/search')
@@ -120,8 +117,8 @@ describe('textapi', () => {
     })
   })
 
-  describe('Get the most occurent words', () => {
-    it('It should returns and array of the most occurent words', (done) => {
+  describe('Get the most occurent word', () => {
+    it('It should return the most occurent word & an array of any other words with the same occurence', (done) => {
       chai
         .request(server)
         .get('/text/mostOccurent')
