@@ -26,6 +26,7 @@ class DatabaseService {
           useNewUrlParser: true,
           useUnifiedTopology: true,
           useCreateIndex: true,
+          useFindAndModify: false,
         },
       )
       console.log('Connection to DB established successfully')
