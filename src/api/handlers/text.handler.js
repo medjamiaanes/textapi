@@ -108,8 +108,10 @@ export const mostOccurent = async (req, res) => {
     const words = await mostOccurentWords(
       texts.map(({ translation }) => translation.toJSON()),
     )
-
-    return res.status(200).json(words)
+    const [mostOccurentWord, ...otherMostOccurentWords] = words
+    return res
+      .status(200)
+      .json({ mostOccurentWord, otherMostOccurentWords })
   } catch (error) {
     return errorResponse(res, error)
   }
