@@ -90,13 +90,12 @@ describe('textapi', () => {
         .get('/text/60e39388c78d014174151ea2/count/en')
         .end((err, res) => {
           expect(res.status).satisfy((status) =>
-            [200, 404, 422].includes(status),
+            [200, 404].includes(status),
           )
           expect(res).satisfy(
             ({ status, body }) =>
               (status === 200 && 'wordsCount' in body) ||
-              status === 404 ||
-              status === 422,
+              status === 404,
           )
           done()
         })
