@@ -2,12 +2,23 @@
 import chai, { expect } from 'chai'
 import chaiHttp from 'chai-http'
 import server from '../src/server'
+import textModel from '../src/api/models/text.model'
 
 chai.use(chaiHttp)
 
-describe('textapi', () => {
+const textData = {
+  ar: 'هذا نص عربي',
+  en: 'This is an english text',
+  fr: 'Ceci est un texte français',
+}
+let textId = ''
+
+describe('textapi testing ...', () => {
+  before((done) => {
+    textModel.deleteMany({}, () => done())
+  })
   describe('Fetch texts', () => {
-    it('It should return all text with pagination', (done) => {
+    it('It should return all texts with pagination', (done) => {
       chai
         .request(server)
         .get('/text')
@@ -25,85 +36,60 @@ describe('textapi', () => {
 
   describe('Create text', () => {
     it('It should create a text and returns it', (done) => {
-      const text = {
-        ar: 'هذا نص عربي',
-        en: 'Text in english',
-        fr: 'Un text en français',
-      }
       chai
         .request(server)
         .post('/text')
-        .send(text)
+        .send(textData)
         .end((err, res) => {
-          expect(res).satisfy(
-            ({ status, body }) =>
-              status === 201 && body._id && body.translation,
-          )
+          expect(res.status).to.equal(201)
+          expect(res.body).to.have.keys(['_id', 'ar', 'fr', 'en'])
+          textId = res.body._id
           done()
         })
     })
   })
 
   describe('Update text', () => {
-    it('It should update a text or return a 404 not found', (done) => {
-      const text = {
-        ar: 'هذا نص عربي',
-        en: 'Text in english',
-        fr: 'Un text en français',
-      }
+    it('It should update a text', (done) => {
       chai
         .request(server)
-        .put('/text/60e39388c78d014174151ea5')
-        .send(text)
+        .put(`/text/${textId}`)
+        .send(textData)
         .end((err, res) => {
-          expect(res).satisfy(
-            ({ status }) => status === 200 || status === 404,
-          )
+          expect(res.status).to.equal(200)
           done()
         })
     })
   })
 
   describe('Get word count by text', () => {
-    it('It should return wordsCount or 404 not found', (done) => {
+    it('It should return wordsCount for a given text', (done) => {
       chai
         .request(server)
-        .get('/text/60e39388c78d014174151ea2/count')
+        .get(`/text/${textId}/count`)
         .end((err, res) => {
-          expect(res.status).satisfy((status) =>
-            [200, 404, 422].includes(status),
-          )
-          expect(res).satisfy(
-            ({ status, body }) =>
-              (status === 200 && 'wordsCount' in body) ||
-              status === 404,
-          )
+          expect(res.status).to.equal(200)
+          expect(res.body).to.have.key('wordsCount')
           done()
         })
     })
   })
 
   describe('Get word count by text & language', () => {
-    it('It should return wordsCount or 404 not found', (done) => {
+    it('It should return wordsCount for a given text & language', (done) => {
       chai
         .request(server)
-        .get('/text/60e39388c78d014174151ea2/count/en')
+        .get(`/text/${textId}/count/en`)
         .end((err, res) => {
-          expect(res.status).satisfy((status) =>
-            [200, 404].includes(status),
-          )
-          expect(res).satisfy(
-            ({ status, body }) =>
-              (status === 200 && 'wordsCount' in body) ||
-              status === 404,
-          )
+          expect(res.status).to.equal(200)
+          expect(res.body).to.have.key('wordsCount')
           done()
         })
     })
   })
 
   describe('Fuzzy search', () => {
-    it('It should return an array of texts', (done) => {
+    it('It should return the most occurent word & an array of other words with the same number of occurence', (done) => {
       chai
         .request(server)
         .get('/text/search')
