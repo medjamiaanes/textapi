@@ -47,7 +47,9 @@ export const update = async (req, res) => {
       { upsert: false, new: true, returnDocument: true },
     )
     if (!updatedText) return res.status(404).send('Not found')
-    return res.status(200).json(updatedText)
+    return res
+      .status(200)
+      .json({ message: 'Text updated successfully' })
   } catch (error) {
     return errorResponse(res, error)
   }

@@ -9,6 +9,13 @@ const textValidation = Joi.string()
   .lowercase()
 
 const stringValidation = Joi.string().required().trim()
+const arabicValidation = textValidation.custom((text, helpers) => {
+  const pattern = /^[\u0621-\u064A0-9\n,،. ]+$/
+  if (!pattern.test(text)) {
+    return helpers.message('Invalid arabic text')
+  }
+  return text
+}, 'arabic text validation')
 const objectIdValidation = Joi.objectId().required()
 const languageValidation = Joi.string()
   .required()
@@ -30,7 +37,7 @@ const errorResponse = (res, error) => {
 export const createValidation = async (req, res, next) => {
   try {
     await Joi.object({
-      ar: textValidation.required(),
+      ar: arabicValidation.required(),
       fr: textValidation.required(),
       en: textValidation.required(),
     }).validateAsync(req.body, validationOptions)
@@ -48,7 +55,7 @@ export const updateValidation = async (req, res, next) => {
       validationOptions,
     )
     await Joi.object({
-      ar: textValidation.allow(null),
+      ar: arabicValidation.allow(null),
       fr: textValidation.allow(null),
       en: textValidation.allow(null),
     }).validateAsync(req.body, validationOptions)
